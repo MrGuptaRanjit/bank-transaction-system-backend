@@ -9,7 +9,7 @@ const ledgerSchema = new mongoose.Schema({
         immutable:true
     },
     amount:{
-        type:Number,
+        type:BigInt,
         required:[true,"Amount is required for a ledger Entry"],
         immutable:true
     },
