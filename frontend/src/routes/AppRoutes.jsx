@@ -1,9 +1,14 @@
 import { Routes, Route } from "react-router-dom";
+import PublicLayout from "../layouts/PublicLayout";
+import Landing from "../pages/public/Landing";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<div>Landing Page</div>} />
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Landing />} />
+      </Route>
+
       <Route path="/login" element={<div>Login Page</div>} />
       <Route path="/register" element={<div>Register Page</div>} />
 
