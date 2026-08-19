@@ -5,6 +5,7 @@ const Button = ({
   to,
   variant = "primary",
   className = "",
+  type = "button",
 }) => {
   const variants = {
     primary:
@@ -47,7 +48,10 @@ const Button = ({
   }
 
   return (
-    <button type="button" className={classes}>
+    <button
+      type={type}
+      className={classes}
+    >
       {children}
     </button>
   );
