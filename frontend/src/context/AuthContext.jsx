@@ -1,10 +1,31 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../services/api";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check existing authentication session
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await api.get("/auth/me");
+
+        setUser(response.data.user);
+        setIsAuthenticated(true);
+      } catch (error) {
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   // Login user
   const login = (userData) => {
@@ -27,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated,
         login,
         logout,
+        isLoading,
       }}
     >
       {children}

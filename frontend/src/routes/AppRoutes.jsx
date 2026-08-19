@@ -4,6 +4,8 @@ import Landing from "../pages/public/Landing";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
+import DashboardLayout from "../layouts/DashboardLayout";
+import Profile from "../pages/dashboard/Profile";
 
 const AppRoutes = () => {
   return (
@@ -18,7 +20,7 @@ const AppRoutes = () => {
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<div>Dashboard</div>} />
+        <Route path="/dashboard" element={<DashboardLayout />} />
         <Route path="/accounts" element={<div>Accounts</div>} />
         <Route path="/send-money" element={<div>Send Money</div>} />
         <Route path="/transactions" element={<div>Transactions</div>} />
@@ -26,6 +28,7 @@ const AppRoutes = () => {
           path="/transactions/:id"
           element={<div>Transaction Details</div>}
         />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   );
