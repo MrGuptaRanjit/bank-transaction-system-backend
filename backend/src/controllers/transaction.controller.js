@@ -32,7 +32,8 @@ async function createTransaction(req,res) {
     }
 
     const fromUserAccount = await accountModel.findOne({
-        _id:fromAccount
+        _id:fromAccount,
+        user: req.user._id
     })
 
     const toUserAccount = await accountModel.findOne({
@@ -56,7 +57,7 @@ async function createTransaction(req,res) {
 
     if(isTransactionAlreadyExists){
 
-        if(isTransactionAlreadyExists.status === "COMPLETE"){
+        if(isTransactionAlreadyExists.status === "COMPLETED"){
             return res.status(200).json({
                 message: "Transaction already processed",
                 isTransactionAlreadyExists: isTransactionAlreadyExists
@@ -130,7 +131,7 @@ async function createTransaction(req,res) {
 
     await (()=>{
         return new Promise((ressolve)=>{
-            setTimeout(ressolve,10*1000)
+            setTimeout(ressolve,3*1000)
         })
     })()
 
@@ -232,7 +233,78 @@ async function createInitialFundsTransaction(req,res) {
 
 }
 
+async function getUserTransactions(req, res) {
+    try {
+        // Find all accounts belonging to logged-in user
+        const userAccounts = await accountModel.find({
+            user: req.user._id,
+        }).select("_id");
+
+        const accountIds = userAccounts.map(
+            (account) => account._id.toString()
+        );
+
+        // Find transactions involving user's accounts
+        const transactions = await transactionModel
+            .find({
+                $or: [
+                    {
+                        fromAccount: {
+                            $in: accountIds,
+                        },
+                    },
+                    {
+                        toAccount: {
+                            $in: accountIds,
+                        },
+                    },
+                ],
+            })
+            .sort({ createdAt: -1 });
+
+        // Add transaction direction
+        const formattedTransactions = transactions.map(
+            (transaction) => {
+                const fromAccountId =
+                    transaction.fromAccount.toString();
+
+                const toAccountId =
+                    transaction.toAccount.toString();
+
+                let direction;
+
+                if (accountIds.includes(fromAccountId)) {
+                    direction = "SENT";
+                } else if (accountIds.includes(toAccountId)) {
+                    direction = "RECEIVED";
+                }
+
+                return {
+                    ...transaction.toObject(),
+                    direction,
+                };
+            }
+        );
+
+        return res.status(200).json({
+            message: "Transactions fetched successfully",
+            transactions: formattedTransactions,
+        });
+
+    } catch (error) {
+        console.error(
+            "Get transactions error:",
+            error
+        );
+
+        return res.status(500).json({
+            message: "Failed to fetch transactions",
+        });
+    }
+}
+
 module.exports = {
     createTransaction,
-    createInitialFundsTransaction
+    createInitialFundsTransaction,
+    getUserTransactions,
 }

@@ -1,16 +1,25 @@
 import { Routes, Route } from "react-router-dom";
+
 import PublicLayout from "../layouts/PublicLayout";
+
 import Landing from "../pages/public/Landing";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
+
+import Dashboard from "../pages/dashboard/Dashboard";
 import Profile from "../pages/dashboard/Profile";
+import Accounts from "../pages/dashboard/Accounts";
+import SendMoney from "../pages/dashboard/SendMoney";
+import Transactions from "../pages/dashboard/Transactions";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ================= PUBLIC ROUTES ================= */}
+
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Landing />} />
       </Route>
@@ -18,17 +27,32 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Protected Routes */}
+      {/* ================= PROTECTED ROUTES ================= */}
+
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardLayout />} />
-        <Route path="/accounts" element={<div>Accounts</div>} />
-        <Route path="/send-money" element={<div>Send Money</div>} />
-        <Route path="/transactions" element={<div>Transactions</div>} />
-        <Route
-          path="/transactions/:id"
-          element={<div>Transaction Details</div>}
-        />
-        <Route path="/profile" element={<Profile />} />
+        {/* Dashboard Application Layout */}
+        <Route element={<DashboardLayout />}>
+          {/* /dashboard */}
+          <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* /accounts */}
+          <Route path="/accounts" element={<Accounts />} />
+
+          {/* /send-money */}
+          <Route path="/send-money" element={<SendMoney />} />
+
+          {/* /transactions */}
+          <Route path="/transactions" element={<Transactions />} />
+
+          {/* /transactions/:id */}
+          <Route
+            path="/transactions/:id"
+            element={<div>Transaction Details</div>}
+          />
+
+          {/* /profile */}
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Route>
     </Routes>
   );
